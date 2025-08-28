@@ -268,21 +268,6 @@ constructor(
 ) {}
 ```
 
-## 📊 微服務架構
-
-### 已部署服務
-| 服務名稱 | 功能描述 | 端點 | 狀態 |
-|---------|---------|-----|------|
-| [`JobService`](src/app/services/job.service.ts) | 職位管理 | `/api/jobs` | ✅ 已部署 |
-| [`TrackedApplicantService`](src/app/services/tracked-applicant.service.ts) | 應聘者追蹤管理 | `/api/trackedApplicants` | ✅ 已部署 |
-
-### 待部署服務
-| 服務名稱 | 功能描述 | 端點 | 狀態 |
-|---------|---------|-----|------|
-| Applicant Service | 應聘者基本資料 | `/api/applicants` | 🔧 待部署 |
-| [`InterviewService`](src/app/services/interview.service.ts) | 面試管理 | `/api/interviewers`, `/api/interviewSessions`, `/api/feedbacks` | 🔧 待部署 |
-| Process Service | 流程管理 | `/api/processes` | 🔧 待部署 |
-
 ## 🌟 功能模組架構
 
 ### 1. 人力資源管理模組
@@ -372,25 +357,3 @@ export const environment = {
 ├── .gcloudignore           # Google Cloud 部署忽略檔案
 └── proxy.conf.json         # 開發環境代理配置
 ```
-
-## 📱 響應式設計架構
-
-### CSS 架構
-- **全域樣式**: [`styles.css`](src/styles.css)
-- **元件樣式**: 各元件專屬 CSS 檔案
-- **框架整合**: Tailwind CSS + PrimeNG + 自訂樣式
-
-### 媒體查詢結構
-```css
-/* 響應式斷點 */
-@media (max-width: 768px) {
-  /* 平板樣式 */
-}
-
-@media (max-width: 480px) {
-  /* 手機樣式 */
-}
-```
-
-這個架構充分利用了 Angular 19 的 Standalone Components、依賴注入、反應式程式設計等現代前端開發模式，同時結合微服務後端架構，提供了可擴展、可維護的企業級應用程式架構。
-
