@@ -44,16 +44,6 @@ graph TB
     end
 ```
 
-## 📊 微服務架構
-
-| 服務名稱 | 功能描述 | 端點 | 狀態 |
-|---------|---------|-----|------|
-| Job Service | 職位管理 | `/api/jobs` | ✅ 已部署 |
-| Applicant Service | 應聘者基本資料 | `/api/applicants` | 🔧 待部署 |
-| Tracked Applicant Service | 應聘者追蹤管理 | `/api/trackedApplicants` | ✅ 已部署 |
-| Interview Service | 面試管理 | `/api/interviewers`, `/api/interviewSessions`, `/api/feedbacks` | 🔧 待部署 |
-| Process Service | 流程管理 | `/api/processes` | 🔧 待部署 |
-
 ## 🌟 核心功能模組
 
 ### 1. 人力資源管理
@@ -162,119 +152,245 @@ export const environment = {
 };
 ```
 
-### 生產環境配置
-詳見 [`MICROSERVICES_URL_CONFIG.md`](MICROSERVICES_URL_CONFIG.md) 和 [`MICROSERVICES_ROUTING_CONFIG.md`](MICROSERVICES_ROUTING_CONFIG.md)
+# ATS (Applicant Tracking System) Frontend
 
-## 🔒 安全性配置
+一個基於 Angular 19 的現代化人才招聘管理系統前端應用，採用微服務架構設計，部署於 Google Cloud Run 平台。
 
-### CORS 配置
-- 支援跨域請求
-- 預檢請求處理
-- 安全標頭設置
+## 🚀 技術架構
 
-### 認證機制
-- JWT Token 自動刷新
-- Google Cloud IAM 整合
-- 權限控制中介層
+### 前端技術棧
+- **Framework**: Angular 19.2.1 (Standalone Components)
+- **Architecture Pattern**: MVC + Component-Based Architecture
+- **UI Library**: PrimeNG - 現代化的 Angular UI 元件庫
+- **CSS Framework**: Tailwind CSS + 自訂 CSS
+- **Build Tool**: Angular CLI + Webpack
+- **Package Manager**: npm
 
-### 安全標頭
-```nginx
-add_header X-Frame-Options "SAMEORIGIN" always;
-add_header X-Content-Type-Options "nosniff" always;
-add_header X-XSS-Protection "1; mode=block" always;
+### 後端架構
+- **Architecture**: 微服務架構 (Microservices)
+- **API Style**: RESTful API
+- **Authentication**: JWT Token-based
+- **Proxy**: Nginx 反向代理
+
+### 雲端基礎設施
+- **Platform**: Google Cloud Run
+- **Container**: Docker 多階段構建
+- **Authentication**: Google Cloud IAM
+- **Monitoring**: Cloud Logging
+
+## 🏗️ 專案資料夾架構
+
+```
+src/
+├── app/                          # 應用程式核心
+│   ├── components/               # 共用元件層 (View)
+│   │   ├── header/              # 頁面標頭元件
+│   │   ├── navbar/              # 導航列元件
+│   │   ├── reviewer-header/     # 審核者標頭元件
+│   │   └── tabs/                # 標籤頁元件
+│   │
+│   ├── pages/                    # 頁面元件層 (View + Controller)
+│   │   ├── dashboard/           # 儀表板頁面
+│   │   ├── job-upload/          # 職缺建立與履歷上傳
+│   │   ├── resume-screening/    # 履歷篩選
+│   │   ├── talent-pool/         # 人才庫管理
+│   │   │
+│   │   ├── supervisor-screen-applicant/  # 主管應聘者篩選
+│   │   ├── supervisor-interview/         # 主管面試安排
+│   │   ├── supervisor-rating/            # 主管面試評分
+│   │   ├── supervisor-decision/          # 主管人選決策
+│   │   │
+│   │   ├── interviewer-interview/        # 面試官面試管理
+│   │   └── interviewer-rating/           # 面試官面試評分
+│   │
+│   ├── services/                 # 服務層 (Model)
+│   │   ├── job.service.ts       # 職位管理服務
+│   │   ├── tracked-applicant.service.ts  # 應聘者追蹤服務
+│   │   └── interview.service.ts # 面試管理服務
+│   │
+│   ├── models/                   # 資料模型層 (Model)
+│   │   ├── job.model.ts         # 職位資料模型
+│   │   ├── applicant.model.ts   # 應聘者資料模型
+│   │   └── interview.model.ts   # 面試資料模型
+│   │
+│   ├── app.component.*          # 根元件
+│   └── app.routes.ts           # 路由配置
+│
+├── environments/                 # 環境配置
+│   └── environment.prod.ts     # 生產環境配置
+├── environment.ts              # 開發環境配置
+├── main.ts                     # 應用程式入口
+└── styles.css                  # 全域樣式
 ```
 
-## 📝 API 文檔
+## 🏛️ 架構模式
 
-### 主要端點
+### 1. MVC 架構模式
+- **Model (模型層)**:
+  - [`services/`](src/app/services/) - 資料服務層，負責與後端 API 通訊
+  - [`models/`](src/app/models/) - 資料模型定義，如 [`Job`](src/app/models/job.model.ts), [`Interviewer`](src/app/models/interview.model.ts)
 
-```bash
-# 職位管理
-GET    /api/jobs
-POST   /api/jobs
-PUT    /api/jobs/:id
-DELETE /api/jobs/:id
+- **View (視圖層)**:
+  - [`components/`](src/app/components/) - 共用 UI 元件
+  - [`pages/*/component.html`](src/app/pages/) - 頁面模板
 
-# 應聘者管理
-GET    /api/trackedApplicants
-POST   /api/trackedApplicants
-PUT    /api/trackedApplicants/:id
-DELETE /api/trackedApplicants/:id
+- **Controller (控制層)**:
+  - [`pages/*/component.ts`](src/app/pages/) - 頁面控制器，處理業務邏輯
 
-# 面試管理
-GET    /api/interviewSessions
-POST   /api/interviewSessions
-GET    /api/feedbacks
-POST   /api/feedbacks
+### 2. Standalone Components 架構
+```typescript
+// 範例：supervisor-screen-applicant.component.ts
+@Component({
+  selector: 'app-supervisor-screen-applicant',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonModule,
+    TableModule,
+    ReviewerHeaderComponent,
+    NavbarComponent
+  ],
+  templateUrl: './supervisor-screen-applicant.component.html',
+  styleUrls: ['./supervisor-screen-applicant.component.css']
+})
+export class SupervisorScreenApplicantComponent {
+  // Controller 邏輯
+}
 ```
 
-## 🧪 測試策略
-
-### 單元測試
-```bash
-npm run test
-npm run test:coverage
+### 3. 服務注入架構
+```typescript
+// 依賴注入模式
+constructor(
+  private jobService: JobService,
+  private trackedApplicantService: TrackedApplicantService
+) {}
 ```
 
-### E2E 測試
-```bash
-npm run e2e
+## 📊 微服務架構
+
+### 已部署服務
+| 服務名稱 | 功能描述 | 端點 | 狀態 |
+|---------|---------|-----|------|
+| [`JobService`](src/app/services/job.service.ts) | 職位管理 | `/api/jobs` | ✅ 已部署 |
+| [`TrackedApplicantService`](src/app/services/tracked-applicant.service.ts) | 應聘者追蹤管理 | `/api/trackedApplicants` | ✅ 已部署 |
+
+### 待部署服務
+| 服務名稱 | 功能描述 | 端點 | 狀態 |
+|---------|---------|-----|------|
+| Applicant Service | 應聘者基本資料 | `/api/applicants` | 🔧 待部署 |
+| [`InterviewService`](src/app/services/interview.service.ts) | 面試管理 | `/api/interviewers`, `/api/interviewSessions`, `/api/feedbacks` | 🔧 待部署 |
+| Process Service | 流程管理 | `/api/processes` | 🔧 待部署 |
+
+## 🌟 功能模組架構
+
+### 1. 人力資源管理模組
+- [`job-upload/`](src/app/pages/job-upload/) - 職缺建立與履歷上傳
+- [`resume-screening/`](src/app/pages/resume-screening/) - 履歷篩選
+- [`talent-pool/`](src/app/pages/talent-pool/) - 人才庫管理
+
+### 2. 主管功能模組
+- [`supervisor-screen-applicant/`](src/app/pages/supervisor-screen-applicant/) - 應聘者篩選
+- [`supervisor-interview/`](src/app/pages/supervisor-interview/) - 面試安排
+- [`supervisor-rating/`](src/app/pages/supervisor-rating/) - 面試評分
+- [`supervisor-decision/`](src/app/pages/supervisor-decision/) - 人選決策
+
+### 3. 面試官功能模組
+- [`interviewer-interview/`](src/app/pages/interviewer-interview/) - 面試管理
+- [`interviewer-rating/`](src/app/pages/interviewer-rating/) - 面試評分
+
+### 4. 共用元件模組
+- [`navbar/`](src/app/components/navbar/) - 導航列
+- [`reviewer-header/`](src/app/components/reviewer-header/) - 頁面標頭
+- [`tabs/`](src/app/components/tabs/) - 標籤頁
+
+## 🛠️ 開發架構模式
+
+### Reactive Programming
+- 使用 RxJS Observable 處理非同步資料流
+- forkJoin 合併多個 API 請求
+
+```typescript
+// 範例：同時載入多個資料源
+forkJoin({
+  sessions: this.interviewService.getInterviewSessions(),
+  jobs: this.jobService.getJobs(),
+  tracked: this.trackedApplicantService.getTrackedApplicants()
+}).subscribe({
+  next: (data) => {
+    // 處理合併後的資料
+  }
+});
 ```
 
-### API 測試
-```bash
-# 健康檢查
-curl -X GET https://your-domain/health
-
-# 測試 API 端點
-curl -X GET https://your-domain/api/jobs
+### 依賴注入模式
+```typescript
+// 服務注入到元件
+constructor(
+  private jobService: JobService,
+  private messageService: MessageService
+) {}
 ```
 
-## 🚀 CI/CD 流程
+### 環境配置管理
+- [`environment.ts`](src/environment.ts) - 開發環境
+- [`environment.prod.ts`](src/environments/environment.prod.ts) - 生產環境
 
-### 自動化部署
-1. **代碼推送** → GitHub/GitLab
-2. **自動構建** → Google Cloud Build
-3. **容器化** → Docker 多階段構建
-4. **部署** → Google Cloud Run
-5. **健康檢查** → 自動驗證
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: '/api',
+  services: {
+    jobService: '/api',
+    applicantService: '/api',
+    interviewService: '/api'
+  }
+};
+```
 
-### 構建配置
-- 生產構建優化
-- Tree-shaking
-- 程式碼分割
-- Gzip 壓縮
+## 🐳 部署架構
 
-## 🔧 故障排除
+### Docker 多階段構建
+- [`Dockerfile`](Dockerfile) - 容器化配置
+- [`entrypoint.sh`](entrypoint.sh) - 動態 Nginx 配置
+- [`nginx.conf`](nginx.conf) - 反向代理配置
 
-### 常見問題
+### 微服務路由架構
+詳見 [`MICROSERVICES_ROUTING_CONFIG.md`](MICROSERVICES_ROUTING_CONFIG.md)
 
-1. **CORS 錯誤**
-   ```bash
-   # 檢查 nginx 配置
-   nginx -t
-   
-   # 查看錯誤日誌
-   tail -f /var/log/nginx/error.log
-   ```
+## 🔧 配置檔案架構
 
-2. **API 連接問題**
-   ```bash
-   # 測試服務連接
-   curl -X GET https://your-domain/api/jobs
-   ```
+```
+配置檔案/
+├── angular.json              # Angular CLI 配置
+├── package.json              # 專案依賴與腳本
+├── tsconfig.json            # TypeScript 編譯配置
+├── Dockerfile               # Docker 容器配置
+├── nginx.conf               # Nginx 伺服器配置
+├── entrypoint.sh           # 容器啟動腳本
+├── .gcloudignore           # Google Cloud 部署忽略檔案
+└── proxy.conf.json         # 開發環境代理配置
+```
 
-3. **認證問題**
-   ```bash
-   # 檢查 JWT Token
-   gcloud auth print-identity-token
-   ```
+## 📱 響應式設計架構
 
-## 📚 開發指南
+### CSS 架構
+- **全域樣式**: [`styles.css`](src/styles.css)
+- **元件樣式**: 各元件專屬 CSS 檔案
+- **框架整合**: Tailwind CSS + PrimeNG + 自訂樣式
 
-### 編碼規範
-- 遵循 Angular Style Guide
-- 使用 TypeScript 嚴格模式
-- 元件採用 Standalone 架構
-- 服務採用依賴注入模式
+### 媒體查詢結構
+```css
+/* 響應式斷點 */
+@media (max-width: 768px) {
+  /* 平板樣式 */
+}
+
+@media (max-width: 480px) {
+  /* 手機樣式 */
+}
+```
+
+這個架構充分利用了 Angular 19 的 Standalone Components、依賴注入、反應式程式設計等現代前端開發模式，同時結合微服務後端架構，提供了可擴展、可維護的企業級應用程式架構。
 
