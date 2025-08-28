@@ -1,158 +1,4 @@
-# ATS (Applicant Tracking System) Frontend
-
-一個基於 Angular 19 的現代化人才招聘管理系統前端應用，採用微服務架構設計，部署於 Google Cloud Run 平台。
-
-## 🚀 技術架構
-
-### 前端技術棧
-- **Framework**: Angular 19.2.1 (Standalone Components)
-- **UI Library**: PrimeNG - 現代化的 Angular UI 元件庫
-- **CSS Framework**: Tailwind CSS - 實用性優先的 CSS 框架
-- **Build Tool**: Angular CLI + Webpack
-- **Package Manager**: npm
-
-### 後端架構
-- **Architecture**: 微服務架構 (Microservices)
-- **API Style**: RESTful API
-- **Authentication**: JWT Token-based
-- **Proxy**: Nginx 反向代理
-
-### 雲端基礎設施
-- **Platform**: Google Cloud Run
-- **Container**: Docker 多階段構建
-- **Load Balancer**: Cloud Load Balancing
-- **Authentication**: Google Cloud IAM
-- **Monitoring**: Cloud Logging
-
-## 🏗️ 系統架構
-
-```mermaid
-graph TB
-    A[Angular Frontend] --> B[Nginx Reverse Proxy]
-    B --> C[Job Service]
-    B --> D[Applicant Service]
-    B --> E[Tracked Applicant Service]
-    B --> F[Interview Service]
-    B --> G[Process Service]
-    
-    subgraph "Google Cloud Run"
-        C
-        D
-        E
-        F
-        G
-    end
-```
-
-## 🌟 核心功能模組
-
-### 1. 人力資源管理
-- **職缺建立與履歷上傳** (`job-upload`)
-- **履歷篩選** (`resume-screening`)
-- **人才庫管理** (`talent-pool`)
-
-### 2. 主管功能
-- **應聘者篩選** (`supervisor-screen-applicant`)
-- **面試安排** (`supervisor-interview`)
-- **面試評分** (`supervisor-rating`)
-- **人選決策** (`supervisor-decision`)
-
-### 3. 面試官功能
-- **面試管理** (`interviewer-interview`)
-- **面試評分** (`interviewer-rating`)
-
-### 4. 通用元件
-- **導航列** (`navbar`)
-- **頁面標頭** (`reviewer-header`)
-- **標籤頁** (`tabs`)
-
-## 🛠️ 開發環境設置
-
-### 系統需求
-- Node.js 18.x+
-- npm 9.x+
-- Angular CLI 19.x+
-- Docker (可選，用於容器化開發)
-
-### 安裝步驟
-
-```bash
-# 1. 克隆專案
-git clone <repository-url>
-cd ats-frontend
-
-# 2. 安裝依賴
-npm install
-
-# 3. 啟動開發伺服器
-ng serve
-
-# 4. 開啟瀏覽器
-open http://localhost:4200
-```
-
-### 開發工具配置
-
-```bash
-# 安裝 Angular CLI
-npm install -g @angular/cli
-
-# 生成新元件
-ng generate component components/example
-
-# 生成新服務
-ng generate service services/example
-
-# 執行單元測試
-npm test
-
-# 執行 E2E 測試
-npm run e2e
-```
-
-## 🐳 Docker 部署
-
-### 本地 Docker 開發
-
-```bash
-# 建置 Docker 映像
-docker build -t ats-frontend .
-
-# 執行容器
-docker run -p 8080:8080 ats-frontend
-```
-
-### 生產環境部署
-
-```bash
-# 部署到 Google Cloud Run
-gcloud run deploy ats-frontend \
-  --source . \
-  --platform managed \
-  --region asia-east1 \
-  --allow-unauthenticated \
-  --set-env-vars NODE_ENV=production
-```
-
-## ⚙️ 環境配置
-
-### 開發環境 (`src/environment.ts`)
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: '/api',
-  services: {
-    jobService: 'https://job-service-xxx.asia-east1.run.app/api',
-    applicantService: 'https://applicant-service-xxx.asia-east1.run.app/api',
-    trackedApplicantService: 'https://tracked-applicant-service-xxx.asia-east1.run.app/api',
-    interviewService: 'https://interview-service-xxx.asia-east1.run.app/api',
-    processService: 'https://process-service-xxx.asia-east1.run.app/api'
-  }
-};
-```
-
-# ATS (Applicant Tracking System) Frontend
+ # ATS (Applicant Tracking System) Frontend
 
 一個基於 Angular 19 的現代化人才招聘管理系統前端應用，採用微服務架構設計，部署於 Google Cloud Run 平台。
 
@@ -204,14 +50,19 @@ src/
 │   │   └── interviewer-rating/           # 面試官面試評分
 │   │
 │   ├── services/                 # 服務層 (Model)
-│   │   ├── job.service.ts       # 職位管理服務
-│   │   ├── tracked-applicant.service.ts  # 應聘者追蹤服務
-│   │   └── interview.service.ts # 面試管理服務
+│   │   ├── job.service.ts       # ✅ 職位管理服務 (完整實作)
+│   │   ├── applicant.service.ts # ✅ 應聘者基本資料服務
+│   │   ├── tracked-applicant.service.ts  # ✅ 應聘者追蹤服務
+│   │   ├── interview.service.ts # ✅ 面試管理服務
+│   │   ├── process.service.ts   # ✅ 流程管理服務
+│   │   └── applicant.service.spec.ts     # 單元測試檔案
 │   │
 │   ├── models/                   # 資料模型層 (Model)
 │   │   ├── job.model.ts         # 職位資料模型
 │   │   ├── applicant.model.ts   # 應聘者資料模型
-│   │   └── interview.model.ts   # 面試資料模型
+│   │   ├── tracked-applicant.model.ts   # 追蹤應聘者模型
+│   │   ├── interview.model.ts   # 面試資料模型
+│   │   └── process.model.ts     # 流程資料模型
 │   │
 │   ├── app.component.*          # 根元件
 │   └── app.routes.ts           # 路由配置
@@ -259,14 +110,89 @@ export class SupervisorScreenApplicantComponent {
 }
 ```
 
-### 3. 服務注入架構
+### 3. 服務注入架構 (JWT Token 認證)
 ```typescript
+// JobService 認證標準範例
+private getAuthHeaders(): HttpHeaders {
+  const token = localStorage.getItem('gcp_id_token');
+  if (!token) {
+    throw new Error('未找到認證 token，請重新登入');
+  }
+  return new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+}
+
 // 依賴注入模式
 constructor(
   private jobService: JobService,
   private trackedApplicantService: TrackedApplicantService
 ) {}
 ```
+
+## 🛠️ 服務層架構 (完整實作)
+
+### 認證機制標準化
+所有服務都使用相同的 JWT Token 認證模式：
+
+```typescript
+// 標準認證方法模板
+private getAuthHeaders(): HttpHeaders {
+  const token = localStorage.getItem('gcp_id_token');
+  if (!token) {
+    throw new Error('未找到認證 token，請重新登入');
+  }
+  return new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+}
+```
+
+### 實際服務清單
+
+| 服務檔案 | 功能描述 | 主要方法 | 認證 | 狀態 |
+|---------|---------|---------|------|------|
+| [`job.service.ts`](src/app/services/job.service.ts) | 職位管理 | `getJobs()`, `getOpenJobs()`, `createJob()`, `deleteJob()` | ✅ JWT | ✅ 完整 |
+| [`applicant.service.ts`](src/app/services/applicant.service.ts) | 應聘者基本資料 | `getApplicants()`, `getApplicantById()`, `createApplicant()` | ✅ JWT | ✅ 完整 |
+| [`tracked-applicant.service.ts`](src/app/services/tracked-applicant.service.ts) | 應聘者追蹤管理 | `getTrackedApplicants()`, `updateStatus()`, `updateProcess()` | ✅ JWT | ✅ 完整 |
+| [`interview.service.ts`](src/app/services/interview.service.ts) | 面試管理 | `getInterviewers()`, `getInterviewSessions()`, `saveScore()` | ✅ JWT | ✅ 完整 |
+| [`process.service.ts`](src/app/services/process.service.ts) | 流程管理 | `getSteps()`, `getStepItems()`, `getStepLabelById()` | ✅ JWT | ✅ 完整 |
+
+### 服務實作範例
+
+#### JobService 核心功能
+```typescript
+// 職位管理服務的主要方法
+getJobs(): Observable<Job[]>                    // 取得所有職缺
+getOpenJobs(): Observable<Job[]>                // 取得開啟中職缺  
+createJob(jobTitle: string): Observable<Job>    // 建立新職缺
+deleteJob(id: number): Observable<void>         // 刪除職缺
+```
+
+#### 微服務路由設計
+- **API URL**: `environment.apiUrl` (`/api`)
+- **Nginx 路由**: `/api/jobs` → `job-service`
+- **認證方式**: Bearer Token (Google Cloud IAM)
+
+## 📊 微服務架構
+
+### 前端服務層 (已完成)
+| 服務名稱 | 功能描述 | API 端點 | 認證 | 狀態 |
+|---------|---------|---------|------|------|
+| [`JobService`](src/app/services/job.service.ts) | 職位管理 | `/api/jobs` | JWT Token | ✅ 已完成 |
+| [`ApplicantService`](src/app/services/applicant.service.ts) | 應聘者基本資料 | `/api/applicants` | JWT Token | ✅ 已完成 |
+| [`TrackedApplicantService`](src/app/services/tracked-applicant.service.ts) | 應聘者追蹤管理 | `/api/trackedApplicants` | JWT Token | ✅ 已完成 |
+| [`InterviewService`](src/app/services/interview.service.ts) | 面試管理 | `/api/interviewers`, `/api/interviewSessions`, `/api/feedbacks` | JWT Token | ✅ 已完成 |
+| [`ProcessService`](src/app/services/process.service.ts) | 流程管理 | `/api/processes` | JWT Token | ✅ 已完成 |
+
+### 後端微服務部署狀態
+| 後端服務 | Google Cloud Run 狀態 | 前端對接 | 備註 |
+|---------|---------------------|---------|------|
+| Job Service | ✅ 已部署 | ✅ 完成 | 職位管理功能正常 |
+| Tracked Applicant Service | ✅ 已部署 | ✅ 完成 | 追蹤功能正常 |
+| Applicant Service | 🔧 待部署 | ✅ 前端就緒 | 等待後端部署 |
+| Interview Service | 🔧 待部署 | ✅ 前端就緒 | 等待後端部署 |
+| Process Service | 🔧 待部署 | ✅ 前端就緒 | 等待後端部署 |
 
 ## 🌟 功能模組架構
 
@@ -357,3 +283,58 @@ export const environment = {
 ├── .gcloudignore           # Google Cloud 部署忽略檔案
 └── proxy.conf.json         # 開發環境代理配置
 ```
+
+## 📱 響應式設計架構
+
+### CSS 架構
+- **全域樣式**: [`styles.css`](src/styles.css)
+- **元件樣式**: 各元件專屬 CSS 檔案
+- **框架整合**: Tailwind CSS + PrimeNG + 自訂樣式
+
+### 媒體查詢結構
+```css
+/* 響應式斷點 */
+@media (max-width: 768px) {
+  /* 平板樣式 */
+}
+
+@media (max-width: 480px) {
+  /* 手機樣式 */
+}
+```
+
+## 🔒 跨域請求解決方案 (CORS)
+
+### Nginx 反向代理架構
+透過 [`nginx.conf`](nginx.conf) 實現統一的 CORS 處理：
+
+```nginx
+# 統一 CORS Header 設定
+add_header 'Access-Control-Allow-Origin' '*' always;
+add_header 'Access-Control-Allow-Credentials' 'true' always;
+add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For,X-Real-IP' always;
+
+# 預檢請求處理
+if ($request_method = 'OPTIONS') {
+    return 204;
+}
+```
+
+### 微服務路由配置
+| 前端路徑 | 後端微服務 | 描述 |
+|---------|-----------|------|
+| `/api/jobs` | Job Service (Cloud Run) | 職位管理 API |
+| `/api/applicants` | Applicant Service | 應聘者資料 API |
+| `/api/trackedApplicants` | Tracked Applicant Service | 追蹤管理 API |
+| `/api/interviewers` | Interview Service | 面試官 API |
+| `/api/interviewSessions` | Interview Service | 面試場次 API |
+| `/api/processes` | Process Service | 流程管理 API |
+
+### 跨域解決策略
+1. **前端請求統一路徑**: 所有 API 都透過 `/api/*` 路徑
+2. **Nginx 反向代理**: 將請求轉發到對應的 Cloud Run 微服務
+3. **統一 CORS 處理**: 在 Nginx 層級統一加上 CORS Header
+4. **預檢請求優化**: OPTIONS 請求直接回應 204，提高效能
+
+這個架構充分利用了 Angular 19 的 Standalone Components、依賴注入、反應式程式設計等現代前端開發模式，同時結合微服務後端架構，提供了可擴展、可維護的企業級應用程式架構。
